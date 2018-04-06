@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="Slack Channel" max_length="40" name="x_snc_slack_inte_slack_channel" type="collection">
+        <element label="Description" max_length="1000" name="description" type="string"/>
+        <element label="Id" max_length="100" name="id" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="Members" max_length="4000" name="members" type="string"/>
+        <element label="Name" max_length="100" name="name" type="string"/>
+    </element>
+</database>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_snc_slack_inte.SlackUtil</api_name>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>SlackUtil</name>
+        <script><![CDATA[var SlackUtil = Class.create();
+SlackUtil.prototype = {
+	initialize: function() {
+	},
+	getData: function(str,obj){
+		var ch = obj.event.channel;
+		this.data = str.split(' '); //Command string
+		this.tb = this.data[1]; //table keyword
+		this.qr = this.data[2]; //query keyword
+		this.list = gs.getProperty('x_snc_slack_inte.table_names');  //List of Table KEY VALUE pairs
+		this.qry = gs.getProperty('x_snc_slack_inte.slack_queries');
+		//List of Query KEY VALUE pairs
+		var table = this.extract(this.list,this.tb);
+		var query = this.extract(this.qry,this.qr);
+		var attach = [];
+		var u;
+		if(table!=undefined && query!=undefined){
+			var t = new GlideRecord(table);
+			t.addEncodedQuery(query);
+			t.query();
+			
+			while(t.next()){
+				attach.push({"color": "#36a64f","text":t.getValue('number')+'\n'+t.getValue('short_description')});
+				}
+				u = JSON.stringify(attach);
+				this.makeCall('Result for the command: ',u,ch);
+			}
+			else{
+				if(table==undefined){
+					attach.push({"color": "#bf0531","text":"Table "+ this.tb + " is NOT AVAILABLE to query"});
+						u = JSON.stringify(attach);
+						this.makeCall("Error: \n ",u,ch);
+					}
+					else if(query==undefined)
+						{
+						attach.push({"color": "#bf0531","text":"Query parameter is EMPTY"});
+							u = JSON.stringify(attach);
+							this.makeCall("Error: \n ",u,ch);
+						}
+						
+					}
+				},
+				reAssign:function(str,obj){
+					var ch = obj.event.channel;
+					this.data = str.split(' '); //Command string
+					this.tb = this.data[1]; //table keyword
+					this.rec = this.data[2]; //record to be reassigned
+					this.usr = this.data[3].replace(/[<>@]/g,''); //User to be assigned
+					this.list = gs.getProperty('x_snc_slack_inte.table_names');  //List of Table KEY VALUE pair
+					var table = this.extract(this.list,this.tb);
+					var user = this.getUser(this.usr);
+					var reassign = new GlideRecord(table);
+					reassign.addQuery('number',this.rec);
+					reassign.query();
+					var attach = [];
+					var u;
+					if(reassign.next()){
+						reassign.assigned_to = user;
+						reassign.update();
+						attach.push({"color": "#36a64f","text":" <@U987V4FNF> Task with Number " +reassign.number + " is reassigned to "+this.data[3]});
+							u = JSON.stringify(attach);
+							this.makeCall("Success \n ",u,ch);
+						}
+						else{
+							attach.push({"color": "#bf0531","text":" <@U987V4FNF> Number mentioned is not available in the system to update"});
+								u = JSON.stringify(attach);
+								this.makeCall("Error: \n ",u,ch);
+							}
+						},
+						makeCall: function(txt,attachment,channel,tkn,endpoint){
+							var token = gs.getProperty('x_snc_slack_inte.slack_token');
+							var text =txt;
+							var api =gs.getProperty('x_snc_slack_inte.slack_api');
+							var end = api+'?token='+token+'&channel='+channel+'&text='+gs.urlEncode(text)+'&attachments='+gs.urlEncode(attachment)+'&pretty=1';
+							//gs.info(end, "slack data");
+							var rm = new sn_ws.RESTMessageV2();
+							rm.setHttpMethod('post');
+							rm.setEndpoint(end);
+							rm.execute();
+						},
+						extract: function(obj,key){
+							var json = new global.JSON().decode(obj);
+							return json[key];
+						},
+						getSlackData: function(endpoint){
+							var rm = new sn_ws.RESTMessageV2();
+							rm.setHttpMethod('GET');
+							rm.setEndpoint(endpoint);
+							var response = rm.execute();
+							return response.getBody();
+						},
+						getUser: function(id){
+							var sys = new GlideRecord('x_snc_slack_inte_slack_user');
+							sys.addQuery('id',id);
+							sys.query();
+							if(sys.next()){
+								return sys.user;
+							}
+						},
+						openSlackChannel : function(user){
+							var token = gs.getProperty('x_snc_slack_inte.slack_token');
+							var end = 'https://slack.com/api/im.open?token='+token+'&user='+user+'&pretty=1';
+							var rm = new sn_ws.RESTMessageV2();
+							rm.setHttpMethod('post');
+							rm.setEndpoint(end);
+							var response = rm.execute();
+							var dm = new global.JSON().decode(response.getBody());
+						      return dm.channel.id;
+						},
+						type: 'SlackUtil'
+					};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-03-20 15:25:50</sys_created_on>
+        <sys_id>8ac8459c138d53403a163d7ed144b05f</sys_id>
+        <sys_mod_count>60</sys_mod_count>
+        <sys_name>SlackUtil</sys_name>
+        <sys_package display_value="Slack Interface" source="x_snc_slack_inte">55470d98138d53403a163d7ed144b00a</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="Slack Interface">55470d98138d53403a163d7ed144b00a</sys_scope>
+        <sys_update_name>sys_script_include_8ac8459c138d53403a163d7ed144b05f</sys_update_name>
+        <sys_updated_by>balasund.swaminathan@snc</sys_updated_by>
+        <sys_updated_on>2018-03-27 16:10:03</sys_updated_on>
+    </sys_script_include>
+</record_update>

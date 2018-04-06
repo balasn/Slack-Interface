@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/x-www-form-urlencoded</consumes>
+        <consumes_customized>true</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>POST</http_method>
+        <name>process</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+	gs.info('called by bot');
+	response.setStatus(200);
+	var stream = request.queryParams.payload;
+	var parse = new global.JSON.parse(stream);
+	var actionName = parse.actions[0].name;
+	var action = parse.actions[0].value;
+	var actionPart = actionName.split('.');
+	var actionTable = actionPart[0];
+	var actionId = actionPart[1];
+	var app = new GlideRecord(actionTable);
+	app.addQuery('sys_id',actionId);
+	app.query();
+	if(app.next()){
+		app.state = action;
+		app.update();
+	}
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_snc_slack_inte/slack_interactive/process</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/process</relative_path>
+        <request_example/>
+        <requires_acl_authorization>true</requires_acl_authorization>
+        <requires_authentication>false</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-03-21 13:41:40</sys_created_on>
+        <sys_id>bdaab56813c593403a163d7ed144b065</sys_id>
+        <sys_mod_count>32</sys_mod_count>
+        <sys_name>process</sys_name>
+        <sys_package display_value="Slack Interface" source="x_snc_slack_inte">55470d98138d53403a163d7ed144b00a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Slack Interface">55470d98138d53403a163d7ed144b00a</sys_scope>
+        <sys_update_name>sys_ws_operation_bdaab56813c593403a163d7ed144b065</sys_update_name>
+        <sys_updated_by>balasund.swaminathan@snc</sys_updated_by>
+        <sys_updated_on>2018-03-27 17:35:23</sys_updated_on>
+        <web_service_definition display_value="Slack Interactive">2a7a356813c593403a163d7ed144b04f</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

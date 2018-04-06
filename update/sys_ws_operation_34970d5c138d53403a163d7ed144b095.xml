@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>POST</http_method>
+        <name>utility</name>
+        <operation_script><![CDATA[(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+	
+	var input = request.body.data;
+	if(input.token == gs.getProperty('x_snc_slack_inte.slack_verification_token')){
+		if(input.challenge){
+			response.setStatus(200);
+			response.setContentType('plain/text');
+			response.getStreamWriter().writeString(input.challenge);
+		}
+		else if(input.event.text!= undefined){
+			
+			var str = input.event.text;
+			var cmd = str.split(' ');
+			var sc = new SlackUtil();
+			if(/\bget\b/.exec(cmd[0])!=null){
+				sc.getData(str,input);
+			}
+			else if(/\breassign\b/.exec(cmd[0])!=null){
+				sc.reAssign(str,input);
+			}
+			else{
+				gs.info('This command is not available to process');
+			}
+			
+		}
+		else{
+			gs.info('This command is not available to process');
+		}
+	}
+	else{
+		response.setStatus(401);
+		response.setContentType('plain/text');
+		response.getStreamWriter().writeString('Opps!! Token not verified');
+	}
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_snc_slack_inte/slack_interface/utility</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/utility</relative_path>
+        <request_example/>
+        <requires_acl_authorization>true</requires_acl_authorization>
+        <requires_authentication>false</requires_authentication>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-03-20 15:19:56</sys_created_on>
+        <sys_id>34970d5c138d53403a163d7ed144b095</sys_id>
+        <sys_mod_count>47</sys_mod_count>
+        <sys_name>utility</sys_name>
+        <sys_package display_value="Slack Interface" source="x_snc_slack_inte">55470d98138d53403a163d7ed144b00a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Slack Interface">55470d98138d53403a163d7ed144b00a</sys_scope>
+        <sys_update_name>sys_ws_operation_34970d5c138d53403a163d7ed144b095</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-03-27 09:59:14</sys_updated_on>
+        <web_service_definition display_value="Slack Interface">1667895c138d53403a163d7ed144b0b7</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

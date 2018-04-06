@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+    <element label="Slack User" max_length="40" name="x_snc_slack_inte_slack_user" type="collection">
+        <element label="Channel" max_length="32" name="channel" reference="x_snc_slack_inte_slack_channel" type="reference"/>
+        <element attributes="edge_encryption_enabled=true" label="Email" max_length="100" name="email" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="ID" max_length="100" name="id" type="string"/>
+        <element label="Is Bot" max_length="40" name="is_bot" type="boolean"/>
+        <element attributes="edge_encryption_enabled=true" label="Name" max_length="100" name="name" type="string"/>
+        <element label="Phone" max_length="40" name="phone" type="phone_number_e164"/>
+        <element attributes="edge_encryption_enabled=true" label="Title" max_length="100" name="title" type="string"/>
+        <element label="User" max_length="32" name="user" reference="sys_user" type="reference"/>
+        <index name="index">
+            <element name="channel"/>
+        </index>
+        <index name="index2">
+            <element name="user"/>
+        </index>
+    </element>
+</database>

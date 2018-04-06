@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_properties">
+    <sys_properties action="INSERT_OR_UPDATE">
+        <choices/>
+        <description/>
+        <ignore_cache>false</ignore_cache>
+        <is_private>false</is_private>
+        <name>x_snc_slack_inte.slack_token</name>
+        <read_roles/>
+        <suffix>slack_token</suffix>
+        <sys_class_name>sys_properties</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-03-21 10:52:30</sys_created_on>
+        <sys_id>632319a4138593403a163d7ed144b046</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>x_snc_slack_inte.slack_token</sys_name>
+        <sys_package display_value="Slack Interface" source="x_snc_slack_inte">55470d98138d53403a163d7ed144b00a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Slack Interface">55470d98138d53403a163d7ed144b00a</sys_scope>
+        <sys_update_name>sys_properties_632319a4138593403a163d7ed144b046</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-03-21 13:04:24</sys_updated_on>
+        <type>string</type>
+        <value>xoxp-315219043974-314267151763-332981536022-5e840361fe14df6e87465a041233e82a</value>
+        <write_roles/>
+    </sys_properties>
+    <sys_translated_text action="delete_multiple" query="documentkey=632319a4138593403a163d7ed144b046"/>
+</record_update>

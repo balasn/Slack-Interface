@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sysauto_script">
+    <sysauto_script action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <condition/>
+        <conditional>false</conditional>
+        <name>Slack User Sync</name>
+        <run_as display_value="System Administrator">6816f79cc0a8016401c5a33be04be441</run_as>
+        <run_as_tz/>
+        <run_dayofmonth>1</run_dayofmonth>
+        <run_dayofweek>1</run_dayofweek>
+        <run_period/>
+        <run_start>2018-03-23 06:36:52</run_start>
+        <run_time>1970-01-01 08:00:00</run_time>
+        <run_type>daily</run_type>
+        <script><![CDATA[initialize();
+function initialize(){
+	var channel = new GlideRecord('x_snc_slack_inte_slack_channel');
+	channel.query();
+	while(channel.next()){
+		var arr = channel.members.split(',');
+		for(i=0;i<arr.length;i++){
+			insert(arr[i],channel.sys_id);
+		}
+	}
+}
+function insert(id,chn){
+	var token = gs.getProperty('x_snc_slack_inte.slack_token');
+	var channels = gs.getProperty('x_snc_slack_inte.slack_channel');
+	var end = 'https://slack.com/api/users.info?token='+token+'&user='+id+'&pretty=1';
+	var call = new SlackUtil().getSlackData(end);
+	var obj = new global.JSON().decode(call);
+	var imp = new GlideRecord('x_snc_slack_inte_slack_user_intermediate');
+	imp.initialize();
+	imp.id = obj.user.id;
+	imp.name = obj.user.real_name;
+	imp.channel = chn;
+	imp.is_bot = obj.user.is_bot;
+	imp.email = obj.user.profile.email;
+	imp.phone = obj.user.profile.phone;
+	imp.title = obj.user.profile.title;
+	imp.insert();
+}]]></script>
+        <sys_class_name>sysauto_script</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-03-23 07:04:32</sys_created_on>
+        <sys_id>35dc224d13c5d3403a163d7ed144b0ae</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>Slack User Sync</sys_name>
+        <sys_package display_value="Slack Interface" source="x_snc_slack_inte">55470d98138d53403a163d7ed144b00a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Slack Interface">55470d98138d53403a163d7ed144b00a</sys_scope>
+        <sys_update_name>sysauto_script_35dc224d13c5d3403a163d7ed144b0ae</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-03-23 07:04:32</sys_updated_on>
+        <upgrade_safe>false</upgrade_safe>
+    </sysauto_script>
+</record_update>

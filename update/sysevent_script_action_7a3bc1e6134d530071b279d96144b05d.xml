@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update sys_domain="global" table="sysevent_script_action">
+    <sysevent_script_action action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <condition_script/>
+        <description/>
+        <event_name>approval.inserted</event_name>
+        <name>Slack approval insert</name>
+        <order>100</order>
+        <script><![CDATA[var approve = '{ "name": "'+current.getTableName()+'.'+current.sys_id+'", "text": "Approve", "type": "button", "style":"primary", "value": "approved" }';
+var reject = '{ "name": "'+current.getTableName()+'.'+current.sys_id+'", "text": "Reject", "style": "danger", "type": "button", "value": "rejected", "confirm": { "text": "Are sure want to reject the approval?", "ok_text": "Yes", "dismiss_text": "No" } }';
+var action = '"actions": ['+approve+','+reject+']';
+var attach = '[{ "text": "Description: '+current.sysapproval.short_description+'", "callback_id": "wopr_game", "color": "#3AA3E3", "attachment_type": "default",'+action+'}]';
+var txt = "Please review the approval and take actions";
+var sys = new GlideRecord('x_snc_slack_inte_slack_user');
+sys.addQuery('user',current.approver);
+sys.query();
+var sc = new SlackUtil();
+if(sys.next()){
+	var chn = sc.openSlackChannel(sys.id);
+	if(chn){
+		gs.info("make call " + txt + attach + chn);
+		sc.makeCall(txt,attach,chn);
+	}
+}
+
+]]></script>
+        <synchronous>false</synchronous>
+        <sys_class_name>sysevent_script_action</sys_class_name>
+        <sys_created_by>balasund.swaminathan@snc</sys_created_by>
+        <sys_created_on>2018-03-27 15:21:46</sys_created_on>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>7a3bc1e6134d530071b279d96144b05d</sys_id>
+        <sys_mod_count>6</sys_mod_count>
+        <sys_name>Slack approval insert</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="Slack Interface" source="x_snc_slack_inte">55470d98138d53403a163d7ed144b00a</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Slack Interface">55470d98138d53403a163d7ed144b00a</sys_scope>
+        <sys_update_name>sysevent_script_action_7a3bc1e6134d530071b279d96144b05d</sys_update_name>
+        <sys_updated_by>balasund.swaminathan@snc</sys_updated_by>
+        <sys_updated_on>2018-03-27 17:25:08</sys_updated_on>
+    </sysevent_script_action>
+</record_update>
